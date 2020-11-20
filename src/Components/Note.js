@@ -1,7 +1,52 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 
 function Note(props) {
+
+    const url = 'http://localhost:8000/graphql'
+
+    const deleteNote = () => {
+
+        // Graphql body for fetching all notes from back-end
+        let request = {
+            query: `
+                mutation deleteNote {
+                    deleteNote(noteId: ${props.noteId}) {
+                        ok
+                    }
+                }
+            `
+        }
+
+        // Do POST request to fetch notes
+        axios.post(url, request).then(response => {
+            console.log('Note deleted')
+        })
+
+        setTimeout(() => {
+            
+            // Graphql body for fetching all notes from back-end
+            let requestNotes = {
+                query: `
+                    query Notes {
+                        notes {
+                            id
+                            title
+                            content
+                        }
+                    }
+                `
+            }
+    
+            // Do POST requestNotes to fetch notes
+            axios.post(url, requestNotes).then(response => {
+                props.handleNotes(response.data)
+            })
+
+        }, 250)
+
+    }
 
     return (
         <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-3">
@@ -14,6 +59,9 @@ function Note(props) {
                 </p>
             </div>
             <div className="px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
+                <span className="text-red-600 hover:text-red-900 px-3" onClick={deleteNote}>
+                    Delete
+                </span>
                 <Link
                     to={{
                         pathname: "/UpdateNote",

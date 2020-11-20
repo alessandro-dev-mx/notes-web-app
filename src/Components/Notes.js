@@ -6,6 +6,9 @@ function Notes() {
     const url = 'http://localhost:8000/graphql'
     const [notes, setNotes] = useState(null)
 
+    const handleNotes = (value) => {
+        setNotes(value)
+    }
     
     // Variable to save all html code for the component
     let componentContent = null
@@ -13,24 +16,30 @@ function Notes() {
     // Use Effect to post to GraphQL only once...
     useEffect(() => {
         
-        // Graphql body for fetching all notes from back-end
-        let request = {
-            query: `
-                query Notes {
-                    notes {
-                        id
-                        title
-                        content
+        setTimeout(() => {
+  
+            // Graphql body for fetching all notes from back-end
+            let request = {
+                query: `
+                    query Notes {
+                        notes {
+                            id
+                            title
+                            content
+                        }
                     }
-                }
-            `
-        }
+                `
+            }
+    
+            // Do POST request to fetch notes
+            axios.post(url, request).then(response => {
+                setNotes(response.data)
+            })
 
-        // Do POST request to fetch notes
-        axios.post(url, request).then(response => {
-            setNotes(response.data)
-        })
+        }, 250)
+
     }, [url])
+
 
     if (notes) {
         console.log(notes)
@@ -39,7 +48,8 @@ function Notes() {
                 <Note
                     title={note.title}
                     content={note.content}
-                    noteId={note.id}/>
+                    noteId={note.id}
+                    handleNotes={handleNotes}/>
             </div>
         )
     }
