@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 function Home() {
     return (
         <div>
+            <h2 className="text-center font-bold p-3 text-2xl">Notes</h2>
             <Notes />
             <div className="mt-8 lex lg:mt-0 lg:flex-shrink-0 flex justify-center">
                 <div className="inline-flex rounded-md shadow">
